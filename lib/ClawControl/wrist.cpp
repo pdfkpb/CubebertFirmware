@@ -1,6 +1,6 @@
 #include "wrist.h"
 
-Wrist::Wrist() {
+Wrist::Wrist(int step, int direction, int sleep) {
 
 }
 

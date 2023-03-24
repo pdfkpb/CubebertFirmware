@@ -7,6 +7,6 @@ public:
     ~Lighting();
 
 private:
-}
+};
 
 #endif // LIGHTING_H

@@ -7,6 +7,6 @@ public:
     ~Fingers();
 
 private:
-}
+};
 
 #endif // FINGERS_H
