@@ -26,6 +26,6 @@ add_dependencies(
   pico_neopixel
 )
 
-install(TARGETS Lighting DESTINATION lib)
+install(TARGETS ${LIB_NAME} DESTINATION lib)
 
-pico_add_extra_outputs(Lighting)
+pico_add_extra_outputs(${LIB_NAME})
