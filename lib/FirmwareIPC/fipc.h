@@ -4,7 +4,7 @@
 #include <queue>
 #include "command.h"
 
-typedef CommandBuffer std::queue<Command*>
+typedef std::queue<Command*> CommandBuffer;
 
 class FIPC {
 public:
@@ -17,6 +17,6 @@ private:
     CommandBuffer* m_commandBuffer;
 
     void processQueue();
-}
+};
 
 #endif // FIPC_H

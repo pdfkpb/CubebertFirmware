@@ -10,13 +10,16 @@ enum State {
 
 class StateMachine {
 public:
-    StateMachine();
+    StateMachine(State initialState);
     ~StateMachine();
 
-    void setState();
+    void setState(State state);
+    State state();
 
     void Ready();
 private:
     State m_state;
     FIPC* m_fipc;
 };
+
+#endif // STATE_H

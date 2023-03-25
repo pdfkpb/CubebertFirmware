@@ -1,12 +1,12 @@
 set(BIN_NAME cubebert-firmware)
 
-add_executable(${BIN_NAME} cubebert-firmware.cpp)
+add_executable(${BIN_NAME} cubebert-firmware.cpp state.cpp)
 
 target_compile_features(${BIN_NAME} PUBLIC cxx_std_11)
 
 target_link_libraries(
   ${BIN_NAME}
-  pico_stdlib
+  PUBLIC pico_stdlib
   PUBLIC FirmwareIPC
   PUBLIC Lighting
 )

@@ -12,8 +12,9 @@ target_link_libraries(
   pico_stdlib
 )
 
-# add_dependencies(
-#   ${LIB_NAME}
-# )
+add_dependencies(
+  ${LIB_NAME}
+  pico_stdlib
+)
 
 install(TARGETS ${LIB_NAME} DESTINATION lib)

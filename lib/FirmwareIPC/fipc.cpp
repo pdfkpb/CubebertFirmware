@@ -1,6 +1,6 @@
 #include "fipc.h"
 
-#include <stdio.h>
+#include "pico/stdio.h"
 
 FIPC::FIPC() {
     m_commandBuffer = new CommandBuffer();
@@ -12,7 +12,11 @@ FIPC::~FIPC() {
 
 Command* FIPC::next() {
     processQueue();
-    return m_commandBuffer->pop();
+
+    Command* cmd = m_commandBuffer->front();
+    m_commandBuffer->pop();
+    
+    return cmd;
 }
 
 //*******************//
@@ -29,7 +33,7 @@ void FIPC::processQueue() {
             continue;
         }
 
-        Command* cmd(action, param);
+        Command* cmd = new Command(action, param);
         m_commandBuffer->push(cmd);
     }
 }

@@ -1,4 +1,4 @@
-#include "commmand.h"
+#include "command.h"
 
 Command::Command(std::string command, std::string param) {
     m_action = ActionMap[command];
@@ -9,10 +9,10 @@ Command::~Command() {
 
 }
 
-Action Command::getAction() {
+Action Command::action() {
     return m_action;
 }
 
-std::string Command::getParam() {
+std::string Command::param() {
     return m_param;
 }
