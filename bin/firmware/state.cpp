@@ -1,6 +1,6 @@
 #include "state.h"
 
-#include "fipc.h"
+#include "command.h"
 
 StateMachine::StateMachine(State initialState) {
     m_state = initialState;
@@ -12,5 +12,14 @@ StateMachine::~StateMachine() {
 }
 
 void StateMachine::Ready() {
-    m_fipc->readr
+    Command* cmd = m_fipc->next();
+
+    switch(cmd->action) {
+    case Action::Solve:
+        break;
+    default:
+        break;
+    }
+
+    delete cmd;
 }

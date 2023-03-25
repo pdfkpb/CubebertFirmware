@@ -1,6 +1,6 @@
 set(LIB_NAME FirmwareIPC)
 
-add_library(${LIB_NAME} fipc.cpp)
+add_library(${LIB_NAME} command.cpp fipc.cpp)
 
 target_include_directories(
   ${LIB_NAME}

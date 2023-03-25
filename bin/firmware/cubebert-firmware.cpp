@@ -10,6 +10,7 @@ bool init() {
 int main() {
     stdio_init_all();
 
+    // Welcome My Friend, welcome to
     StateMachine theMachine(init() ? State::Ready : State::Shutdown);
 
     while(theMachine.state() != State::Shutdown) {
@@ -18,7 +19,7 @@ int main() {
             theMachine.Ready();
             break;
         default:
-            state = State::Shutdown;
+            theMachine.setState(State::Shutdown);
         }
         sleep_ms(1);
     }
