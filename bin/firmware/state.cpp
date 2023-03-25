@@ -12,5 +12,5 @@ StateMachine::~StateMachine() {
 }
 
 void StateMachine::Ready() {
-
+    m_fipc->readr
 }
