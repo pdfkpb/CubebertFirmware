@@ -7,6 +7,8 @@ target_compile_features(${BIN_NAME} PUBLIC cxx_std_11)
 target_link_libraries(
   ${BIN_NAME}
   pico_stdlib
+  PUBLIC FirmwareIPC
+  PUBLIC Lighting
 )
 
 add_dependencies(
