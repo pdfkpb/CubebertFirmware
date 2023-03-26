@@ -15,7 +15,8 @@ int main() {
     while(theMachine.state() != State::Shutdown) {
         switch(theMachine.state()){
         case State::Ready:
-            printf("State: Ready\n");
+            sleep_ms(10000);
+            //printf("State: Ready\n");
             theMachine.Ready();
             continue;
         default:
@@ -23,7 +24,7 @@ int main() {
         }
 
         // Sleep for 250 between cycles to keep from overflexing the processor 
-        sleep_ms(250);
+        sleep_ms(500);
     }
     printf("Why'd we exit? %d", theMachine.state());
 }
