@@ -14,7 +14,7 @@ Note: Will only bother to test compiling this on an RPI
 mkdir build
 cd build
 
-cmake .. -DPICO_SDK_PATH=$PICO_SDK_PATH
+cmake .. -DPICO_SDK_PATH=$PICO_SDK_PATH -DPICO_BOARD=pico_w
 make
 ```
 

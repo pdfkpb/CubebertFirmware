@@ -25,10 +25,10 @@ void StateMachine::Ready() {
 
     switch(cmd->action()) {
     case Action::Solve:
-        printf("Param: %s\n", cmd->param());
         break;
     case Action::None:
     default:
+        printf("No Command On Deck\n");
         break;
     }
 

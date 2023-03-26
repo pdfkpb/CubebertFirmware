@@ -11,6 +11,9 @@ target_link_libraries(
   PUBLIC Lighting
 )
 
+pico_enable_stdio_usb(${BIN_NAME} 1)
+pico_enable_stdio_uart(${BIN_NAME} 0)
+
 add_dependencies(
   ${BIN_NAME}
   pico_stdlib

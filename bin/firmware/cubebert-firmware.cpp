@@ -15,11 +15,15 @@ int main() {
     while(theMachine.state() != State::Shutdown) {
         switch(theMachine.state()){
         case State::Ready:
+            printf("State: Ready\n");
             theMachine.Ready();
-            break;
+            continue;
         default:
             theMachine.setState(State::Shutdown);
         }
-        sleep_ms(1);
+
+        // Sleep for 250 between cycles to keep from overflexing the processor 
+        sleep_ms(250);
     }
+    printf("Why'd we exit? %d", theMachine.state());
 }

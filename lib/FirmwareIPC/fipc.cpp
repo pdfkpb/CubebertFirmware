@@ -16,6 +16,10 @@ Command* FIPC::next() {
     Command* cmd = m_commandBuffer->front();
     m_commandBuffer->pop();
     
+    if(cmd == nullptr) {
+        printf("next() No CMD\n");
+        cmd = new Command("", "");
+    }
     return cmd;
 }
 
@@ -24,16 +28,32 @@ Command* FIPC::next() {
 //*******************//
 
 void FIPC::processQueue() {
-    std::string action;
-    std::string param;
-
-    while(scanf("[^]%s$%s&", &action, &param) != EOF) {
-        if(ferror(stdin)) {
-            printf("Invalid Command");
-            continue;
+    std::string action = "";
+    std::string buffer = "";
+    
+    bool readingCmd = false;
+    for (int ch; (ch = getchar()); ch != EOF) {
+        char pChar = static_cast<char>(ch);
+        
+        if (pChar == '*') {
+            break;
         }
 
-        Command* cmd = new Command(action, param);
-        m_commandBuffer->push(cmd);
+        switch (pChar) {
+        case '^': readingCmd = true;
+            break;
+        case ',': std::swap(action, buffer);
+            break;
+        case '&':
+            m_commandBuffer->push(new Command(action, buffer));
+            action.clear();
+            buffer.clear();
+            readingCmd = false;
+            break;
+        default:
+            if (readingCmd) {
+                buffer.push_back(pChar);
+            }
+        }
     }
 }
