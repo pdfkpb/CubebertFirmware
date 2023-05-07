@@ -1,6 +1,6 @@
 set(LIB_NAME ClawControl)
 
-add_library(${LIB_NAME} fingers.cpp wrist.cpp)
+add_library(${LIB_NAME} claw.cpp fingers.cpp palm.cpp wrist.cpp)
 
 target_include_directories(
   ${LIB_NAME}

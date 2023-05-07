@@ -3,14 +3,11 @@
 
 class Fingers {
 public:
-    Fingers();
+    Fingers(int pin);
     ~Fingers();
 
 private:
-    int m_set1Pin;
-    int m_set2Pin;
-
-    int m_state;
+    int m_pin
 };
 
 #endif // FINGERS_H
