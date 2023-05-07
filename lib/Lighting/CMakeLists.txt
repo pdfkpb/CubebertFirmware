@@ -23,6 +23,7 @@ target_link_libraries(
 
 add_dependencies(
   ${LIB_NAME}
+  pico_stdlib
   pico_neopixel
 )
 
