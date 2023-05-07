@@ -16,6 +16,9 @@ void Fingers::next() {
         break;
     case Set1Vertical:
         break;
-    case
+    case Set2Vertical:
+        break;
+    default:
+        
     }
 }
