@@ -27,6 +27,7 @@ private:
     int m_sleepPin;
     int m_homingPin;
 
+    int m_currentAngle;
     int m_angle;
     float m_speed;
     Direction m_direction;
