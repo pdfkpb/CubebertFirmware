@@ -3,7 +3,7 @@
 
 class Fingers {
 public:
-    Fingers(int vertPin, int horPin);
+    Fingers();
     ~Fingers();
 
 private:

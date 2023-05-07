@@ -1,9 +1,6 @@
 #include "fingers.h"
 
-Fingers::Fingers(int vertPin, int horPin) {
-    m_set1Pin = nsPin;
-    m_set2Pin = ewPin;
-
+Fingers::Fingers() {
     m_state = State::Initialize;
 }
 
