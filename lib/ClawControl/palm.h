@@ -8,6 +8,8 @@ public:
     Palm();
     ~Palm();
 
+    void home();
+
 private:
     int m_state;
 

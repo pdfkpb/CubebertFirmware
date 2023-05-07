@@ -1,7 +1,7 @@
 #ifndef CLAW_H
 #define CLAW_H
 
-#include "fingers.h"
+#include "palm.h"
 #include "wrist.h"
 
 class Claw {
@@ -9,11 +9,11 @@ public:
     Claw();
     ~Claw();
 
+    void initialize();
+
 private:
-
-
-
-    Wrist::Wrist* wrist;
+    Palm::Palm* m_palm;
+    Wrist::Wrist* m_wrist;
 };
 
 #endif // CLAW_H
