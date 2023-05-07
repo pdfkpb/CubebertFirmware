@@ -6,3 +6,11 @@ Fingers::Fingers(int pin) {
 
 Fingers::~Fingers() {
 }
+
+void Fingers::open() {
+
+}
+
+void Fingers::close() {
+    
+}

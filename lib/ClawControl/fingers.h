@@ -6,6 +6,9 @@ public:
     Fingers(int pin);
     ~Fingers();
 
+    void open();
+    void close();
+
 private:
     int m_pin
 };
