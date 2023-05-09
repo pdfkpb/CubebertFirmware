@@ -13,8 +13,8 @@ public:
 private:
     int m_state;
 
-    Fingers::Fingers* setOne;
-    Fingers::Fingers* setTwo;
+    Fingers::Fingers* m_setOne;
+    Fingers::Fingers* m_setTwo;
 };
 
 #endif // PALM_H
