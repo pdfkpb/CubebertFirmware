@@ -11,6 +11,6 @@ Palm::~Palm() {
 }
 
 void Palm::home() {
-    setOne->open();
-    setTwo->open();
+    m_setOne->open();
+    m_setTwo->open();
 }

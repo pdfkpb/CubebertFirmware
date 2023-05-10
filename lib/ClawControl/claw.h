@@ -12,8 +12,8 @@ public:
     void initialize();
 
 private:
-    Palm::Palm* m_palm;
-    Wrist::Wrist* m_wrist;
+    Palm* m_palm;
+    Wrist* m_wrist;
 };
 
 #endif // CLAW_H

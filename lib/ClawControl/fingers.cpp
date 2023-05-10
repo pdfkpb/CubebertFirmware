@@ -1,11 +1,12 @@
 #include "fingers.h"
 
-#include "pico/stdio.h"
 #include "pico/stdlib.h"
+#include <stdio.h>
+#include "pico/time.h"
+#include "hardware/pwm.h"
 
 Fingers::Fingers(int pin) {
     m_pin = pin;
-
 
     m_state = Fingers::State::Unknown;
 }
@@ -23,7 +24,7 @@ void Fingers::close() {
 
 // Private Functions
 
-void Fingers::set_pwm_pin(int pin, void* callback) {
+void Fingers::set_pwm_pin(int pin, irq_handler_t callback) {
     // Tell the LED pin that the PWM is in charge of its value.
     gpio_set_function(pin, GPIO_FUNC_PWM);
     uint slice_num = pwm_gpio_to_slice_num(pin);
@@ -32,7 +33,7 @@ void Fingers::set_pwm_pin(int pin, void* callback) {
     // and register our interrupt handler
     pwm_clear_irq(slice_num);
     pwm_set_irq_enabled(slice_num, true);
-    irq_set_exclusive_handler(PWM_IRQ_WRAP, on_pwm_wrap);
+    irq_set_exclusive_handler(PWM_IRQ_WRAP, callback);
     irq_set_enabled(PWM_IRQ_WRAP, true);
 
     pwm_config config = pwm_get_default_config();

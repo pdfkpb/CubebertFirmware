@@ -10,11 +10,13 @@ target_include_directories(
 target_link_libraries(
   ${LIB_NAME}
   pico_stdlib
+  hardware_pwm
 )
 
 add_dependencies(
   ${LIB_NAME}
   pico_stdlib
+  hardware_pwm
 )
 
 install(TARGETS ${LIB_NAME} DESTINATION lib)

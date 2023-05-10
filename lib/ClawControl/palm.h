@@ -5,7 +5,7 @@
 
 class Palm {
 public:
-    Palm();
+    Palm(int dataPin1, int dataPin2);
     ~Palm();
 
     void home();
@@ -13,8 +13,8 @@ public:
 private:
     int m_state;
 
-    Fingers::Fingers* m_setOne;
-    Fingers::Fingers* m_setTwo;
+    Fingers* m_setOne;
+    Fingers* m_setTwo;
 };
 
 #endif // PALM_H

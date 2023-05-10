@@ -1,7 +1,10 @@
 #ifndef WRIST_H
 #define WRIST_H
 
+#include "hardware/irq.h"
+
 #define HOMING_SPEED 0.2
+#define HOMING_POLL_MS 100
 
 enum Direction {
     CW,
@@ -18,7 +21,7 @@ public:
 
     void home();
     void turn(int deg);
-    void setSpeed(float speed); // [0.0, 1.0)
+    bool setSpeed(float speed); // [0.0, 1.0)
     void setDirection(Direction direction);
 
 private:
@@ -31,6 +34,8 @@ private:
     int m_angle;
     float m_speed;
     Direction m_direction;
+
+    void set_pwm_pin(int pin, irq_handler_t callback);
 };
 
 #endif // WRIST_H
