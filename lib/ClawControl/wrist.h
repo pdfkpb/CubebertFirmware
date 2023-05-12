@@ -35,7 +35,8 @@ private:
     void enable();
     void disable();
 
-    void set_pwm_pin(int pin, irq_handler_t callback);
+    void pio_pwm_set_period(PIO pio, uint sm, uint32_t period);
+    void pio_pwm_set_level(PIO pio, uint sm, uint32_t level);
 };
 
 #endif // WRIST_H

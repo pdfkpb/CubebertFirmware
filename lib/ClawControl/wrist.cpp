@@ -1,9 +1,11 @@
 #include "wrist.h"
 
-#include "pico/stdlib.h"
+#include "stepper.pio.h"
+
 #include <stdio.h>
 #include "pico/time.h"
-#include "hardware/pwm.h"
+#include "pico/stdlib.h"
+#include "hardware/pio.h"
 
 Wrist::Wrist(int stepPin, int directionPin, int sleepPin, int homingPin) {
     // Save Pin Info
@@ -102,4 +104,18 @@ void Wrist::enable() {
 
 void Wrist::disable() {
     gpio_put(m_sleepPin, 1);
+}
+
+// Write `period` to the input shift register
+void Wrist::pio_pwm_set_period(PIO pio, uint sm, uint32_t period) {
+    pio_sm_set_enabled(pio, sm, false);
+    pio_sm_put_blocking(pio, sm, period);
+    pio_sm_exec(pio, sm, pio_encode_pull(false, false));
+    pio_sm_exec(pio, sm, pio_encode_out(pio_isr, 32));
+    pio_sm_set_enabled(pio, sm, true);
+}
+
+// Write `level` to TX FIFO. State machine will copy this into X.
+void Wrist::pio_pwm_set_level(PIO pio, uint sm, uint32_t level) {
+    pio_sm_put_blocking(pio, sm, level);
 }
