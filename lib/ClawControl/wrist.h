@@ -16,11 +16,8 @@ public:
     Wrist(int stepPin, int directionPin, int sleepPin, int homingPin);
     ~Wrist();
 
-    void enable();
-    void disable();
-
     void home();
-    void turn(int deg);
+    void turn(float deg);
     bool setSpeed(float speed); // [0.0, 1.0)
     void setDirection(Direction direction);
 
@@ -31,9 +28,12 @@ private:
     int m_homingPin;
 
     int m_currentAngle;
-    int m_angle;
+    float m_angle;
     float m_speed;
     Direction m_direction;
+
+    void enable();
+    void disable();
 
     void set_pwm_pin(int pin, irq_handler_t callback);
 };

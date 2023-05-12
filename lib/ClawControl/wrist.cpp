@@ -54,10 +54,13 @@ void Wrist::home() {
 
     // Some PWM to back up a few steps
     gpio_put(m_directionPin, Direction::CCW);
-    turn(10);
-    gpio_put(m_directionPin, Direction::CW);
+    enable();
+    sleep_ms(HOMING_POLL_MS);
+    disable();
 
     m_speed /= 2;
+    gpio_put(m_directionPin, Direction::CW);
+
     while(gpio_get(m_homingPin)) {
         sleep_ms(HOMING_POLL_MS);
     }
@@ -68,17 +71,16 @@ void Wrist::home() {
     m_speed = tmpSpeed;
 }
 
-void Wrist::enable() {
-    gpio_put(m_sleepPin, 0);
+/**
+ * @brief Sets the Angle and 
+ * 
+ * @param deg 
+ */
+void Wrist::turn(float deg) {
+    m_angle += deg;
+    enable();
 }
 
-void Wrist::disable() {
-    gpio_put(m_sleepPin, 1);
-}
-
-void Wrist::turn(int deg) {
-    m_angle = deg;
-}
 
 bool Wrist::setSpeed(float speed) {
     if (speed >= 0 && speed < 1) {
@@ -94,20 +96,10 @@ void Wrist::setDirection(Direction direction) {
 
 // Private Functions
 
-void Wrist::set_pwm_pin(int pin, irq_handler_t callback) {
-    // Tell the LED pin that the PWM is in charge of its value.
-    gpio_set_function(pin, GPIO_FUNC_PWM);
-    uint slice_num = pwm_gpio_to_slice_num(pin);
+void Wrist::enable() {
+    gpio_put(m_sleepPin, 0);
+}
 
-    // Mask our slice's IRQ output into the PWM block's single interrupt line,
-    // and register our interrupt handler
-    pwm_clear_irq(slice_num);
-    pwm_set_irq_enabled(slice_num, true);
-    irq_set_exclusive_handler(PWM_IRQ_WRAP, callback);
-    irq_set_enabled(PWM_IRQ_WRAP, true);
-
-    pwm_config config = pwm_get_default_config();
-    pwm_config_set_clkdiv(&config, 5.0);
-    // Load the configuration into our PWM slice, and set it running.
-    pwm_init(slice_num, &config, true);
+void Wrist::disable() {
+    gpio_put(m_sleepPin, 1);
 }
