@@ -23,8 +23,6 @@ private:
     std::map<std::string, Action> ActionMap{
         { "",       Action::None},
         { "Solve",  Action::Solve },
-        { "BufAdd", Action::AddToSolveBuffer },
-        { "ClrBuf", Action::ClearSolveBuffer },
     };
 
     Action m_action;
