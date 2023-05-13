@@ -91,6 +91,12 @@ void Wrist::turn(float deg) {
 bool Wrist::setSpeed(float speed) {
     if (speed >= 0 && speed < 1) {
         m_speed = speed;
+
+        pio_sm_set_enabled(m_pio, m_sm, false);
+        pio_sm_put_blocking(m_pio, m_sm, period);
+        pio_sm_exec(m_pio, m_sm, pio_encode_pull(false, false));
+        pio_sm_exec(m_pio, m_sm, pio_encode_out(pio_isr, 32));
+
         return true;
     }
     return false;
@@ -112,21 +118,25 @@ bool Writst::isReady() {
 
 // Private Functions
 
+/**
+ * @brief brings the sleep pin high, costing some power, but at least we can turn
+ * 
+ */
 void Wrist::enable() {
-    gpio_put(m_sleepPin, 0);
-}
-
-void Wrist::disable() {
     gpio_put(m_sleepPin, 1);
 }
 
+/**
+ * @brief brings the sleep pin low, saving some power at the cost of torque
+ * 
+ */
+void Wrist::disable() {
+    gpio_put(m_sleepPin, 0);
+}
+
 // Write `period` to the input shift register
-void Wrist::pio_pwm_set_period(PIO pio, uint sm, uint32_t period) {
-    pio_sm_set_enabled(pio, sm, false);
-    pio_sm_put_blocking(pio, sm, period);
-    pio_sm_exec(pio, sm, pio_encode_pull(false, false));
-    pio_sm_exec(pio, sm, pio_encode_out(pio_isr, 32));
-    pio_sm_set_enabled(pio, sm, true);
+void Wrist:(PIO pio, uint sm, uint32_t period) {
+    
 }
 
 // Write `level` to TX FIFO. State machine will copy this into X.
