@@ -21,6 +21,9 @@ skip:
     jmp y-- countloop      ; Loop until Y hits 0, then pull a fresh PWM value from FIFO
 
 % c-sdk {
+#define FUNC_STEPPER_SPEED (0x00ul << 31)
+#define FUNC_STEPPER_TURN  (0x01ul << 31)
+
 static inline void stepper_program_init(PIO pio, uint sm, uint offset, uint pin) {
    pio_gpio_init(pio, pin);
    pio_sm_set_consecutive_pindirs(pio, sm, pin, 1, true);
