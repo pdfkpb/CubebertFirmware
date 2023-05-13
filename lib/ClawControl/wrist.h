@@ -17,9 +17,12 @@ public:
     ~Wrist();
 
     void home();
+
     void turn(float deg);
     bool setSpeed(float speed); // [0.0, 1.0)
     void setDirection(Direction direction);
+
+    bool pollState();
 
 private:
     int m_stepPin;

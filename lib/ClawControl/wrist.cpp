@@ -80,7 +80,11 @@ void Wrist::home() {
  */
 void Wrist::turn(float deg) {
     m_angle += deg;
+    
     enable();
+
+    uint32_t steps = angle2Steps(m_angle);
+    pio_sm_put_blocking(pio, sm, steps);
 }
 
 
@@ -94,6 +98,16 @@ bool Wrist::setSpeed(float speed) {
 
 void Wrist::setDirection(Direction direction) {
     m_direction = direction;
+}
+
+/**
+ * @brief Checks the Wrist is ready to perform another action
+ * 
+ * @return true - We all good
+ * @return false - If there is no response from the SM or there is an error response
+ */
+bool Writst::isReady() {
+    return !pio_sm_is_rx_fifo_empty(m_pio, m_sm) && !(m_err = pio_sm_get(m_pio, m_sm));
 }
 
 // Private Functions
