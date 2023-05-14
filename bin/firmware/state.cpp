@@ -4,9 +4,15 @@
 #include "pico/stdio.h"
 #include "pico/stdlib.h"
 
+#include "wrist.h"
+
 StateMachine::StateMachine(State initialState) {
     m_state = initialState;
     m_fipc = new FIPC();
+
+    Wrist* wrist = new Wrist(3/*stepPin*/, 2/*directionPin*/, 4/*sleepPin*/, 5/*homingPin*/);
+    wrist->setSpeed(0.5);
+    wrist->turn(90);
 }
 
 StateMachine::~StateMachine() {

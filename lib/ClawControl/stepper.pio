@@ -1,34 +1,40 @@
 ;
-; Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
+; Copyright (c) 2023 Kevin Barnett, Dylan Hartfield
 ;
-; SPDX-License-Identifier: BSD-3-Clause
+; SPDX-License-Identifier: MIT
 ;
 
-; Side-set pin 0 is used for PWM output
+; SET pin 0 should be mapped to your Stepper Output
+; X will hold our frequency
 
 .program stepper
-.side_set 1 opt
+.wrap_target
+    pull block    ; Start with the number of steps
+    out y, 32
+    pull block    ; Then we'll get the frequency and hope it works like I want
+    out x, 32
 
-    pull noblock    side 0 ; Pull from FIFO to OSR if available, else copy X to OSR.
-    mov x, osr             ; Copy most-recently-pulled value back to scratch X
-    mov y, isr             ; ISR contains PWM period. Y used as counter.
-countloop:
-    jmp x!=y noset         ; Set pin high if X == Y, keep the two paths length matched
-    jmp skip        side 1
-noset:
-    nop                    ; Single dummy cycle to keep the two paths the same length
-skip:
-    jmp y-- countloop      ; Loop until Y hits 0, then pull a fresh PWM value from FIFO
+pulse:
+    set pins, 1 [2] ; Bring STEP HIGH, and wait 1 Cycle
+    set pins, 0 [2] ; Bring STEP LOW, and wait 1 Cycle
+
+waitx:             ; and delay x
+    jmp x-- waitx
+    set x, 31      ; Reset x hopefully
+    jmp y-- pulse    ; Repeat until y steps
+
+; Respond that we're ready
+    set x, 1
+    in x, 1
+    push noblock
+.wrap
 
 % c-sdk {
-#define FUNC_STEPPER_SPEED (0x00ul << 31)
-#define FUNC_STEPPER_TURN  (0x01ul << 31)
-
 static inline void stepper_program_init(PIO pio, uint sm, uint offset, uint pin) {
    pio_gpio_init(pio, pin);
    pio_sm_set_consecutive_pindirs(pio, sm, pin, 1, true);
    pio_sm_config c = stepper_program_get_default_config(offset);
-   sm_config_set_sideset_pins(&c, pin);
+   sm_config_set_set_pins(&c, pin, 1);
    pio_sm_init(pio, sm, offset, &c);
 }
 %}

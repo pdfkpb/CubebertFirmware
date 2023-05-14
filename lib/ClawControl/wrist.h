@@ -11,6 +11,10 @@
 #define EIGTH_STEP           0.125f
 #define THIRTY_SECONDTH_STEP 0.03125f
 
+#define NOOP_MAX   208u
+#define NOOP_MIN   52u
+#define NOOP_RANGE (NOOP_MAX - NOOP_MIN)
+
 #define DEG_PER_STEP         1.8f
 #define STEP_RESOLUTION      QUARTER_STEP
 #define STEPS_PER_REVOLUTION (360 / (DEG_PER_STEP * STEP_RESOLUTION))
@@ -31,6 +35,8 @@ public:
 
     bool isReady();
 
+    void blink(uint32_t);
+
 private:
     static uint32_t pioBlockCounter;
 
@@ -39,15 +45,15 @@ private:
     uint32_t m_sleepPin;
     uint32_t m_homingPin;
 
+    uint32_t m_speed;
+
+    PIO m_pio;
+    uint32_t m_stateMachine;
+    uint32_t m_programOffset;
+
     void enable();
     void disable();
     uint32_t angle2Steps(uint32_t angle);
-
-    struct StepperController {
-        PIO pio;
-        uint32_t stateMachine;
-        uint32_t programOffset;
-    } m_stepperConfig;
 
     enum Direction {
         CW,

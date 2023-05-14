@@ -18,10 +18,12 @@ Wrist::Wrist(
     m_homingPin = homingPin;
 
     // Initialize Pins
-    m_stepperConfig.pio = (pioBlockCounter++ % 2) ? pio0 : pio1;
-    m_stepperConfig.stateMachine = pio_claim_unused_sm(m_stepperConfig.pio, true);
-    m_stepperConfig.programOffset = pio_add_program(m_stepperConfig.pio, &stepper_program);
-    stepper_program_init(m_stepperConfig.pio, m_stepperConfig.stateMachine, m_stepperConfig.programOffset, m_stepPin);
+    m_pio = pio0;
+    m_stateMachine = pio_claim_unused_sm(m_pio, true);
+    m_programOffset = pio_add_program(m_pio, &stepper_program);
+    //pio_sm_set_clkdiv(m_pio, m_stateMachine, 2.0f);
+    stepper_program_init(m_pio, m_stateMachine, m_programOffset, m_stepPin);
+    pio_sm_set_enabled(m_pio, m_stateMachine, true);
 
     gpio_init(m_directionPin);
     gpio_set_dir(m_directionPin, GPIO_OUT);
@@ -37,6 +39,18 @@ Wrist::Wrist(
 
 Wrist::~Wrist() {
     
+}
+
+void Wrist::blink(uint32_t howMany) {
+    const uint LED_PIN = 0;
+    gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+    for (int i=0; i<howMany; ++i) {
+        gpio_put(LED_PIN, 1);
+        sleep_ms(250);
+        gpio_put(LED_PIN, 0);
+        sleep_ms(250);
+    }
 }
 
 void Wrist::home() {
@@ -77,14 +91,30 @@ void Wrist::turn(int32_t angle) {
     enable();
 
     uint32_t steps = angle2Steps(angle);
-    pio_sm_put_blocking(m_stepperConfig.pio, m_stepperConfig.stateMachine, (FUNC_STEPPER_TURN & steps));
+    pio_sm_put_blocking(m_pio, m_stateMachine, steps);
+    pio_sm_put_blocking(m_pio, m_stateMachine, m_speed);
+
+    while(!isReady()) {
+        sleep_ms(250);
+    }
+    blink(5);
 }
 
-
+/**
+ * @brief Sets the speed where 1 is max speed
+ *
+ * For the DRV8834 The min required pulse width is 1.9us high and low
+ * we're going to hedge our bets and do 2us giving us a MAX freq of 250kHz
+ * there's no way the motor can go that fast, and calculations lead me to believe
+ * for a first go between 2.5kHz and 20kHz is ideal ranging from 0.66 tps to 6 tps
+ * tps - turn per second where 1 turns is 360 degrees
+ * overall this gives us a no-op length between 208 and 52 where longer lengths are slower frequencies
+ * 
+ * @param speed 
+ */
 void Wrist::setSpeed(float speed) {
-    if (speed = 0 && speed <= 1) {
-        // Come back to this function
-        // pio_sm_put_blocking(pio, sm, (FUNC_STEPPER_TURN & ));
+    if (speed > 0 && speed <= 1) {
+        m_speed = (NOOP_RANGE * speed) + 52;
     }
 }
 
@@ -95,7 +125,7 @@ void Wrist::setSpeed(float speed) {
  * @return false - If there is no response from the SM or there is an error response
  */
 bool Wrist::isReady() {
-    return !pio_sm_is_rx_fifo_empty(m_stepperConfig.pio, m_stepperConfig.stateMachine) && !pio_sm_get(m_stepperConfig.pio, m_stepperConfig.stateMachine);
+    return !pio_sm_is_rx_fifo_empty(m_pio, m_stateMachine) && !pio_sm_get(m_pio, m_stateMachine);
 }
 
 // ------ Private ------ //
@@ -108,6 +138,7 @@ uint32_t Wrist::pioBlockCounter = 0;
  */
 void Wrist::enable() {
     gpio_put(m_sleepPin, 1);
+    sleep_ms(10); // Wait for DRV8835 to wake up
 }
 
 /**
