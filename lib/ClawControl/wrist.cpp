@@ -21,8 +21,7 @@ Wrist::Wrist(
     m_pio = pio0;
     m_stateMachine = pio_claim_unused_sm(m_pio, true);
     m_programOffset = pio_add_program(m_pio, &stepper_program);
-    //pio_sm_set_clkdiv(m_pio, m_stateMachine, 2.0f);
-    stepper_program_init(m_pio, m_stateMachine, m_programOffset, m_stepPin);
+    stepper_program_init(m_pio, m_stateMachine, m_programOffset, m_stepPin, m_homingPin);
     pio_sm_set_enabled(m_pio, m_stateMachine, true);
 
     gpio_init(m_directionPin);
@@ -31,10 +30,6 @@ Wrist::Wrist(
     gpio_init(m_sleepPin);
     gpio_set_dir(m_sleepPin, GPIO_OUT);
     gpio_put(m_sleepPin, 1); // Start with the motor asleep
-
-    gpio_init(m_homingPin);
-    gpio_set_dir(m_homingPin, GPIO_IN);
-    gpio_pull_up(m_homingPin);
 }
 
 Wrist::~Wrist() {
@@ -55,29 +50,20 @@ void Wrist::blink(uint32_t howMany) {
 
 void Wrist::home() {
     // Begin Homing
-    setSpeed(HOMING_SPEED);
     gpio_put(m_directionPin, Direction::CW);
 
-    
-    while (gpio_get(m_homingPin)) {
-        sleep_ms(HOMING_POLL_MS);
-    }
-    disable();
-
-    // Some PWM to back up a few steps
-    gpio_put(m_directionPin, Direction::CCW);
     enable();
-    sleep_ms(HOMING_POLL_MS);
-    disable();
+    // Start Homing Sequence
+    pio_sm_put(m_pio, m_stateMachine, 0);
+    // Set steps and speed, we should find the switch within 360 degrees
+    pio_sm_put(m_pio, m_stateMachine, angle2Steps(360));
+    pio_sm_put(m_pio, m_stateMachine, HOMING_SPEED);
+    
+    // setSpeed(HOMING_SPEED / 2);
+    // gpio_put(m_directionPin, Direction::CW);
 
-    setSpeed(HOMING_SPEED / 2);
-    gpio_put(m_directionPin, Direction::CW);
-
-    while(gpio_get(m_homingPin)) {
-        sleep_ms(HOMING_POLL_MS);
-    }
+    pio_sm_get_blocking(m_pio, m_stateMachine);
     disable();
-    // End Homing
 }
 
 /**
@@ -90,13 +76,10 @@ void Wrist::turn(int32_t angle) {
 
     enable();
 
-    uint32_t steps = angle2Steps(angle);
-    pio_sm_put_blocking(m_pio, m_stateMachine, steps);
-    pio_sm_put_blocking(m_pio, m_stateMachine, m_speed);
+    pio_sm_put(m_pio, m_stateMachine, angle2Steps(angle));
+    pio_sm_put(m_pio, m_stateMachine, 15);
 
-    while(!isReady()) {
-        sleep_ms(250);
-    }
+    pio_sm_get_blocking(m_pio, m_stateMachine);
     blink(5);
 }
 
@@ -125,7 +108,12 @@ void Wrist::setSpeed(float speed) {
  * @return false - If there is no response from the SM or there is an error response
  */
 bool Wrist::isReady() {
-    return !pio_sm_is_rx_fifo_empty(m_pio, m_stateMachine) && !pio_sm_get(m_pio, m_stateMachine);
+    if (pio_sm_is_rx_fifo_empty(m_pio, m_stateMachine)) {
+        return false;
+    }
+
+    disable();
+    return true;
 }
 
 // ------ Private ------ //
@@ -138,7 +126,7 @@ uint32_t Wrist::pioBlockCounter = 0;
  */
 void Wrist::enable() {
     gpio_put(m_sleepPin, 1);
-    sleep_ms(10); // Wait for DRV8835 to wake up
+    sleep_ms(25); // Wait for DRV8835 to wake up
 }
 
 /**

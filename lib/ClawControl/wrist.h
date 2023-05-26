@@ -3,7 +3,7 @@
 
 #include "hardware/pio.h"
 
-#define HOMING_SPEED   0.2f
+#define HOMING_SPEED   720
 #define HOMING_POLL_MS 100u
 
 #define HALF_STEP            0.5f
