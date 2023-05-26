@@ -18,6 +18,15 @@ public:
 
     void Ready();
 private:
+    struct Robot {
+        Claw *north;
+        Claw *south;
+        Claw *east;
+        Claw *west;
+    };
+    
+    Robot m_robot;
+
     State m_state;
     FIPC* m_fipc;
 };

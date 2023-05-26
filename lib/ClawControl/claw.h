@@ -4,9 +4,23 @@
 #include "palm.h"
 #include "wrist.h"
 
+struct WristConfig {
+    uint stepPin;
+    uint directionPin;
+    uint sleepPin;
+    uint homingPin;
+};
+
 class Claw {
 public:
-    Claw();
+    Claw(
+        uint fingerPin1,
+        uint fingerPin2,
+        uint stepPin,
+        uint directionPin,
+        uint sleepPin,
+        uint homingPin
+    );
     ~Claw();
 
     void initialize();

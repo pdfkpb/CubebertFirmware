@@ -22,10 +22,10 @@
 class Wrist {
 public:
     Wrist(
-        uint32_t stepPin,
-        uint32_t directionPin,
-        uint32_t sleepPin,
-        uint32_t homingPin);
+        uint stepPin,
+        uint directionPin,
+        uint sleepPin,
+        uint homingPin);
     ~Wrist();
 
     void home();
@@ -35,15 +35,15 @@ public:
 
     bool isReady();
 
-    void blink(uint32_t);
+    void blink(uint interval);
 
 private:
     static uint32_t pioBlockCounter;
 
-    uint32_t m_stepPin;
-    uint32_t m_directionPin;
-    uint32_t m_sleepPin;
-    uint32_t m_homingPin;
+    uint m_stepPin;
+    uint m_directionPin;
+    uint m_sleepPin;
+    uint m_homingPin;
 
     uint32_t m_speed;
 
