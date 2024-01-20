@@ -21,10 +21,11 @@ public:
 
 private:
     std::map<std::string, Action> ActionMap{
-        { "",       Action::None},
-        { "Solve",  Action::Solve },
-        { "BufAdd", Action::AddToSolveBuffer },
-        { "ClrBuf", Action::ClearSolveBuffer },
+        { "",          Action::None},
+        { "Home",      Action::Home },
+        { "Clawffset", Action::Clawffset }
+        { "Turn",      Action::Turn },
+        { "Solve",     Action::Solve },
     };
 
     Action m_action;
