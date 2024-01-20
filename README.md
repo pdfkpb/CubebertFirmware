@@ -2,6 +2,8 @@
 Firmware Repo for Cubebert, imported as ExternalProject from Cubebert
 Note: Will only bother to test compiling this on an RPI
 
+Under construction, being rewritten for Micropython
+
 ## Getting Started
 
 ### Prerequisites
